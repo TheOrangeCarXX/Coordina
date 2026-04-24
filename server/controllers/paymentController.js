@@ -1,6 +1,7 @@
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const Booking = require("../models/Booking");
+const QRCode = require("qrcode");
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY,
@@ -39,10 +40,29 @@ exports.verifyPayment = async (req, res) => {
     .digest("hex");
 
   if (expectedSign === razorpay_signature) {
-    
-    await Booking.findByIdAndUpdate(bookingId, {
-      status: "confirmed",
-      paymentId: razorpay_payment_id
+
+    // 🔥 get booking
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ success: false, message: "Booking not found" });
+    }
+
+    // update status
+    booking.status = "confirmed";
+    booking.paymentId = razorpay_payment_id;
+
+    // 🔥 GENERATE QR
+    const qrData = `booking:${booking._id}`;
+    const qrCode = await QRCode.toDataURL(qrData);
+
+    booking.qrCode = qrCode;
+
+    await booking.save();
+
+    res.json({
+      success: true,
+      qrCode // send QR to frontend
     });
 
     res.json({ success: true });

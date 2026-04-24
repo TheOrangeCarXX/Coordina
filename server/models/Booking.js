@@ -9,6 +9,11 @@ const bookingSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Event"
     },
+    qrCode: String,
+    isUsed: {
+        type: Boolean,
+        default: false
+    },
     tickets: Number,
         status: {
     type: String,
