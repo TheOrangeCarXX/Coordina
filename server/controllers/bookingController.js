@@ -13,7 +13,7 @@ exports.bookEvent = async (req, res) => {
             {
                 $inc: { availableSeats: -tickets }
             },
-            { new: true }
+            { returnDocument: "after" }
         );
 
         if (!event) {

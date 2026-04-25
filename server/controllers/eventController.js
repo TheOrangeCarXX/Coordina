@@ -2,10 +2,10 @@ const Event = require("../models/Event");
 
 exports.getEvents = async (req, res) => {
     try {
-        console.log(req.body);
+        // console.log(req.body);
         const events = await Event.find();
         res.status(200).json(events);
-        console.log("Current Events:",events);
+        // console.log("Current Events:",events);
     } catch (err) {
         res.status(500).json({ error: "Error fetching events" });
     }

@@ -65,8 +65,6 @@ exports.verifyPayment = async (req, res) => {
       qrCode // send QR to frontend
     });
 
-    res.json({ success: true });
-
   } else {
     res.status(400).json({ success: false });
   }
